@@ -1,8 +1,5 @@
-library;
 
-import '../dynamodb-2012-08-10.dart';
-import 'package:shared_aws_api/shared.dart';
-import 'translator.dart';
+part of 'dynamodb-2012-08-10.dart';
 
 /// The document client simplifies working with items in Amazon DynamoDB
 /// by abstracting away the notion of attribute values. This abstraction
@@ -42,19 +39,7 @@ import 'translator.dart';
 /// For more information see {AWS.DynamoDB.DocumentClient.createSet}
 class DocumentClient {
   final DynamoDB dynamoDB;
-
-  DocumentClient(
-      {required String region,
-      DynamoDB? dynamoDB,
-      AwsClientCredentials? credentials,
-      String? endpointUrl,
-      Client? client})
-      : dynamoDB = dynamoDB ??
-            DynamoDB(
-                region: region,
-                credentials: credentials,
-                endpointUrl: endpointUrl,
-                client: client);
+  const DocumentClient._(this.dynamoDB);
 
   /// Returns a set of attributes for the item with the given primary key by
   /// delegating to DynamoDB.getItem().
@@ -102,12 +87,8 @@ class DocumentClient {
 
     return BatchGetOutput(
       response.consumedCapacity ?? [],
-      response.responses?.map(
-            (k, v) => MapEntry(
-              k,
-              v.map((e) => e.toJson()).toList(),
-            ),
-          ) ??
+      response.responses
+              ?.map((k, v) => MapEntry(k, v.map((e) => e.toJson()).toList())) ??
           {},
       response.unprocessedKeys?.map(
             (k, v) => MapEntry(
