@@ -1,20 +1,17 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:dynamodb/dax-2017-04-19.dart';
-import 'package:dynamodb/dynamodb-2012-08-10.dart';
-
-import 'package:http/http.dart';
-import 'package:http/testing.dart';
+import 'package:dynamodb/dynamodb.dart';
 import 'package:test/test.dart';
+import 'package:http/testing.dart';
+import 'package:http/http.dart';
 
-DocumentClient mockedDocumentClient(dynamic mockData) {
+DynamoDBDocumentClient mockedDocumentClient(dynamic mockData) {
   return DynamoDB(
     region: 'foo',
     credentials: AwsClientCredentials(accessKey: '123', secretKey: '123'),
     client: MockClient(
       (req) async => Response(jsonEncode(mockData), 200),
-    )).documentClient;
+    )).DocumentClient;
 }
 
 void main() {

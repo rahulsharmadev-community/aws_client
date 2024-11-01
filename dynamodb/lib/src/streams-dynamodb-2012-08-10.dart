@@ -5,11 +5,11 @@
 // ignore_for_file: unused_local_variable
 // ignore_for_file: unused_shown_name
 
-library;
-
 import 'dart:convert';
 import 'dart:typed_data';
-import 'helpers/attribute_value.dart';
+import 'package:dynamodb/src/aws_client.dart';
+
+import 'attribute_value.dart';
 import 'package:shared_aws_api/shared.dart' as _s;
 import 'package:shared_aws_api/shared.dart'
     show
@@ -21,40 +21,23 @@ import 'package:shared_aws_api/shared.dart'
 
 export 'package:shared_aws_api/shared.dart' show AwsClientCredentials;
 
+
 /// Amazon DynamoDB Streams provides API actions for accessing streams and
 /// processing stream records. To learn more about application development with
 /// Streams, see <a
 /// href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html">Capturing
 /// Table Activity with DynamoDB Streams</a> in the Amazon DynamoDB Developer
 /// Guide.
-class DynamoDBStreams {
-  final _s.JsonProtocol _protocol;
+class DynamoDBStreams extends AwsClient {
   DynamoDBStreams({
-    required String region,
-    _s.AwsClientCredentials? credentials,
-    _s.AwsClientCredentialsProvider? credentialsProvider,
-    _s.Client? client,
-    String? endpointUrl,
-  }) : _protocol = _s.JsonProtocol(
-          client: client,
-          service: _s.ServiceMetadata(
-            endpointPrefix: 'streams.dynamodb',
-            signingName: 'dynamodb',
-          ),
-          region: region,
-          credentials: credentials,
-          credentialsProvider: credentialsProvider,
-          endpointUrl: endpointUrl,
-        );
-
-  /// Closes the internal HTTP client if none was provided at creation.
-  /// If a client was passed as a constructor argument, this becomes a noop.
-  ///
-  /// It's important to close all clients when it's done being used; failing to
-  /// do so can cause the Dart process to hang.
-  void close() {
-    _protocol.close();
-  }
+    required super.region,
+    super.credentials,
+    super.credentialsProvider,
+    super.client,
+    super.endpointUrl,
+  }) : super(
+            service: _s.ServiceMetadata(
+                endpointPrefix: 'streams.dynamodb', signingName: 'dynamodb'));
 
   /// Returns information about a stream, including the current status of the
   /// stream, its Amazon Resource Name (ARN), the composition of its shards, and
@@ -89,17 +72,12 @@ class DynamoDBStreams {
     String? exclusiveStartShardId,
     int? limit,
   }) async {
-    _s.validateNumRange(
-      'limit',
-      limit,
-      1,
-      1152921504606846976,
-    );
+    _s.validateNumRange('limit', limit, 1, 1152921504606846976);
     final headers = <String, String>{
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDBStreams_20120810.DescribeStream'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -158,7 +136,7 @@ class DynamoDBStreams {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDBStreams_20120810.GetRecords'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -231,7 +209,7 @@ class DynamoDBStreams {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDBStreams_20120810.GetShardIterator'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -285,7 +263,7 @@ class DynamoDBStreams {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDBStreams_20120810.ListStreams'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -302,7 +280,6 @@ class DynamoDBStreams {
     return ListStreamsOutput.fromJson(jsonResponse.body);
   }
 }
-
 
 /// Represents the output of a <code>DescribeStream</code> operation.
 class DescribeStreamOutput {

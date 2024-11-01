@@ -1,16 +1,13 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-// ignore_for_file: unused_element
-// ignore_for_file: unused_field
-// ignore_for_file: unused_import
-// ignore_for_file: unused_local_variable
-// ignore_for_file: unused_shown_name
-library;
+// ignore_for_file: deprecated_member_use_from_same_package, non_constant_identifier_names
+// ignore_for_file: unused_element, unused_field, unused_import, unused_local_variable, unused_shown_name
 
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'attribute_value.dart';
+import 'package:dynamodb/src/aws_client.dart';
+import 'package:dynamodb/src/streams-dynamodb-2012-08-10.dart';
 import 'package:shared_aws_api/shared.dart' as _s;
-import 'helpers/attribute_value.dart';
 import 'package:shared_aws_api/shared.dart'
     show
         rfc822ToJson,
@@ -19,8 +16,6 @@ import 'package:shared_aws_api/shared.dart'
         nonNullableTimeStampFromJson,
         timeStampFromJson;
 
-export 'package:shared_aws_api/shared.dart' show AwsClientCredentials;
-
 part 'document_client.dart';
 
 /// Amazon DynamoDB is a fully managed NoSQL database service that provides fast
@@ -28,35 +23,22 @@ part 'document_client.dart';
 /// offload the administrative burdens of operating and scaling a distributed
 /// database, so that you don't have to worry about hardware provisioning, setup
 /// and configuration, replication, software patching, or cluster scaling.
-class DynamoDB {
-  final _s.JsonProtocol _protocol;
+class DynamoDB extends AwsClient {
   DynamoDB({
-    required String region,
-    _s.AwsClientCredentials? credentials,
-    _s.AwsClientCredentialsProvider? credentialsProvider,
-    _s.Client? client,
-    String? endpointUrl,
-  }) : _protocol = _s.JsonProtocol(
-          client: client,
-          service: _s.ServiceMetadata(
-            endpointPrefix: 'dynamodb',
-          ),
-          region: region,
-          credentials: credentials,
-          credentialsProvider: credentialsProvider,
-          endpointUrl: endpointUrl,
-        );
+    required super.region,
+    super.credentials,
+    super.credentialsProvider,
+    super.client,
+    super.endpointUrl,
+  }) : super(service: _s.ServiceMetadata(endpointPrefix: 'dynamodb'));
+  
 
-  DocumentClient get documentClient => DocumentClient._(this);
+  ///{@macro aws_dynamodb_document_client}
+  DynamoDBDocumentClient get DocumentClient => DynamoDBDocumentClient._(this);
 
-  /// Closes the internal HTTP client if none was provided at creation.
-  /// If a client was passed as a constructor argument, this becomes a noop.
-  ///
-  /// It's important to close all clients when it's done being used; failing to
-  /// do so can cause the Dart process to hang.
-  void close() {
-    _protocol.close();
-  }
+
+  //  // ignore: non_constant_identifier_names
+  //  factory DynamoDB.Strems() => DynamoDBStreams(region: '');
 
   /// This operation allows you to perform batch reads or writes on data stored
   /// in DynamoDB, using PartiQL. Each read statement in a
@@ -87,7 +69,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.BatchExecuteStatement'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -273,7 +255,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.BatchGetItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -458,7 +440,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.BatchWriteItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -538,7 +520,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.CreateBackup'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -638,7 +620,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.CreateGlobalTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -969,7 +951,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.CreateTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1021,7 +1003,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DeleteBackup'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1240,7 +1222,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DeleteItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1320,7 +1302,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DeleteResourcePolicy'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1377,7 +1359,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DeleteTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1408,7 +1390,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeBackup'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1455,7 +1437,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeContinuousBackups'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1489,7 +1471,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeContributorInsights'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1513,7 +1495,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeEndpoints'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1539,7 +1521,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeExport'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1578,7 +1560,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeGlobalTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1617,7 +1599,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeGlobalTableSettings'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1645,7 +1627,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeImport'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1675,7 +1657,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeKinesisStreamingDestination'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1772,7 +1754,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeLimits'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1811,7 +1793,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1846,7 +1828,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeTableReplicaAutoScaling'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1876,7 +1858,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DescribeTimeToLive'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1916,7 +1898,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.DisableKinesisStreamingDestination'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -1962,7 +1944,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.EnableKinesisStreamingDestination'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2060,7 +2042,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ExecuteStatement'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2125,7 +2107,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ExecuteTransaction'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2239,7 +2221,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ExportTableToPointInTime'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2382,7 +2364,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.GetItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2460,7 +2442,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.GetResourcePolicy'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2522,7 +2504,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ImportTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2622,7 +2604,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListBackups'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2674,7 +2656,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListContributorInsights'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2720,7 +2702,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListExports'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2781,7 +2763,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListGlobalTables'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2829,7 +2811,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListImports'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2873,7 +2855,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListTables'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -2915,7 +2897,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.ListTagsOfResource'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -3168,7 +3150,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.PutItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -3289,7 +3271,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.PutResourcePolicy'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -3748,7 +3730,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.Query'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -3859,7 +3841,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.RestoreTableFromBackup'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4003,7 +3985,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.RestoreTableToPointInTime'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4412,7 +4394,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.Scan'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4474,7 +4456,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.TagResource'
     };
-    await _protocol.send(
+    await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4538,7 +4520,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.TransactGetItems'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4683,7 +4665,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.TransactWriteItems'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4730,7 +4712,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UntagResource'
     };
-    await _protocol.send(
+    await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4778,7 +4760,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateContinuousBackups'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4823,7 +4805,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateContributorInsights'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4902,7 +4884,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateGlobalTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -4997,7 +4979,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateGlobalTableSettings'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -5345,7 +5327,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateItem'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -5405,7 +5387,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateKinesisStreamingDestination'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -5567,7 +5549,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateTable'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -5629,7 +5611,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateTableReplicaAutoScaling'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,
@@ -5700,7 +5682,7 @@ class DynamoDB {
       'Content-Type': 'application/x-amz-json-1.0',
       'X-Amz-Target': 'DynamoDB_20120810.UpdateTimeToLive'
     };
-    final jsonResponse = await _protocol.send(
+    final jsonResponse = await protocol.send(
       method: 'POST',
       requestUri: '/',
       exceptionFnMap: _exceptionFns,

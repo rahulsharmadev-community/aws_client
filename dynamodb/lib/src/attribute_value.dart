@@ -1,6 +1,8 @@
+
+
+
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:shared_aws_api/shared.dart' as _s;
 
 /// Represents the data for an attribute.
@@ -106,20 +108,10 @@ class AttributeValue {
   }
 
   Map<String, dynamic> toJson() {
-    final b = this.b;
-    final boolValue = this.boolValue;
-    final bs = this.bs;
-    final l = this.l;
-    final m = this.m;
-    final n = this.n;
-    final ns = this.ns;
-    final nullValue = this.nullValue;
-    final s = this.s;
-    final ss = this.ss;
     return {
-      if (b != null) 'B': base64Encode(b),
+      if (b != null) 'B': base64Encode(b!),
       if (boolValue != null) 'BOOL': boolValue,
-      if (bs != null) 'BS': bs.map(base64Encode).toList(),
+      if (bs != null) 'BS': bs!.map(base64Encode).toList(),
       if (l != null) 'L': l,
       if (m != null) 'M': m,
       if (n != null) 'N': n,
@@ -130,8 +122,6 @@ class AttributeValue {
     };
   }
 }
-
-
 
 AttributeValue toAttributeValue(dynamic value) {
   if (value == null) {

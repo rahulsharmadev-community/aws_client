@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dynamodb/helpers/attribute_value.dart';
-
 import 'package:test/test.dart';
+import 'package:dynamodb/dynamodb.dart';
 
 void main() {
   group('Converting', () {

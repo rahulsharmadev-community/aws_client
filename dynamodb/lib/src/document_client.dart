@@ -1,6 +1,6 @@
-
 part of 'dynamodb-2012-08-10.dart';
 
+/// {@template aws_dynamodb_document_client}
 /// The document client simplifies working with items in Amazon DynamoDB
 /// by abstracting away the notion of attribute values. This abstraction
 /// annotates native Dart types supplied as input parameters, as well
@@ -37,9 +37,10 @@ part of 'dynamodb-2012-08-10.dart';
 /// learn more about supported types see the
 /// [Amazon DynamoDB Data Model Documentation](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html)
 /// For more information see {AWS.DynamoDB.DocumentClient.createSet}
-class DocumentClient {
+/// {@endtemplate}
+class DynamoDBDocumentClient {
   final DynamoDB dynamoDB;
-  const DocumentClient._(this.dynamoDB);
+  const DynamoDBDocumentClient._(this.dynamoDB);
 
   /// Returns a set of attributes for the item with the given primary key by
   /// delegating to DynamoDB.getItem().
