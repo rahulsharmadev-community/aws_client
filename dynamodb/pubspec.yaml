@@ -8,7 +8,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  meta: ^1.16.0
+  meta: >=^1.0.0
   shared_aws_api:
     git:
       url: https://github.com/rahulsharmadev-community/aws_client.git
